@@ -67,11 +67,15 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
     new webpack.NoEmitOnErrorsPlugin(),
     // https://github.com/ampedandwired/html-webpack-plugin
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'index.html',
-      inject: true
-    }),
+  /*************************************************************************注释掉for多页面 */
+    
+    // new HtmlWebpackPlugin({
+    //   filename: 'index.html',
+    //   template: 'index.html',
+    //   inject: true
+    // }),
+
+     /*************************************************************************注释掉for多页面 */
     // copy custom static assets
     // 将static文件夹和里面的内容拷贝到开发模式下的路径,比如static下有个img文件夹，里面有张图片
     // 我们可以这样访问：localhost:8080/static/img/logo.png  
@@ -80,7 +84,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       to: config.dev.assetsSubDirectory,
       ignore: ['.*']
     }])
-  ]
+  ].concat(utils.htmlPlugin()) // 多页面html模版
 })
 
 //这里主要是做端口的检索以及npm run dev后对错误的处理，我们可以看这里使用了前面引入的

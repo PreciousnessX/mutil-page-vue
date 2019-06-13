@@ -5,10 +5,10 @@
     <ul>
       <li>
         <a
-          href="https://vuejs.org"
+          href="cell.html"
           target="_blank"
         >
-          Core Docs
+          测试
         </a>
       </li>
       <li>
