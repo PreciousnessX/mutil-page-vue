@@ -4,6 +4,7 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 
+//resolve这个函数返回的是当前目录下"../dir"这个文件夹，__dirname指的是当前文件所在路径
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
@@ -11,10 +12,17 @@ function resolve (dir) {
 
 
 module.exports = {
+
+  //返回项目的根路径  
+  //context 基础目录，绝对路径，用于从配置中解析入口起点(entry point)和 loader
   context: path.resolve(__dirname, '../'),
+
+
+  // 配置入口的地方(多入口打包需要配置这里)  *************************************************************** //
   entry: {
     app: './src/main.js'
   },
+  // 配置出口的地方(多入口打包也需要配置这里)  ************************************************************ // 
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
@@ -23,12 +31,16 @@ module.exports = {
       : config.dev.assetsPublicPath
   },
   resolve: {
+     //自动解析扩展，比如引入对应的文件，js,vue,json的后缀名就可以省略了    
     extensions: ['.js', '.vue', '.json'],
     alias: {
+      //精准匹配，使用vue来替代vue/dist/vue.esm.js
       'vue$': 'vue/dist/vue.esm.js',
+      //使用@替代src路径，当你引入src下的文件是可以使用import XXfrom "@/xx"
       '@': resolve('src'),
     }
   },
+  //一些loader配置，避免篇幅过长我省略一部分，大家可以看自己的文件 
   module: {
     rules: [
       {
@@ -67,6 +79,7 @@ module.exports = {
       }
     ]
   },
+  //node里的这些选项是都是Node.js全局变量和模块，这里主要是防止webpack注入一些Node.js的东西到vue中  
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue
     // source contains it (although only uses it if it's native).
@@ -80,3 +93,25 @@ module.exports = {
     child_process: 'empty'
   }
 }
+
+
+/*********************定义自动获取入口文件的函数(2)供参考学习***********/
+
+ const glob = require('glob')
+
+ function getEntries(globPath) {
+   const entries = glob.sync(globPath).reduce((result, entry) => { // (***这个函数写的比较高级,可以研究一下***)
+     const moduleName = path.basename(path.dirname(entry)) // 获取模块名称
+      result[moduleName] = entry
+     return result
+   }, {})
+   return entries
+ }
+// 测试一下 getEntries这个函数
+console.log(getEntries('../static/*')) // 获取static下的所有文件
+
+// 使用 注意路径用的是 ../ (***可以研究一下***)
+const entries = getEntries('./src/modules/**/*.js') // 获取src/modules文件夹下的所有js文件作为入口
+console.log('entries',entries)  // 返回值 是一个对象
+
+/*********************************结束*******************************/
