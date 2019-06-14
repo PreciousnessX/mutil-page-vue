@@ -152,6 +152,7 @@ exports.entries = function () {
     var filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.')) // 获取文件名
     map[filename] = filePath
   })
+  console.log(map)
   return map // 返回一个对象,作为入口
 }
 
@@ -183,6 +184,7 @@ exports.htmlPlugin = function () {
     }
     arr.push(new HtmlWebpackPlugin(conf))
   })
+  console.log(arr)
   return arr // 返回一个数组  数组里面是实例化的 生成html文件的插件(因为是多页面应用,一个html是一个单页面)
 }
 
