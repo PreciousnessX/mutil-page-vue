@@ -95,24 +95,3 @@ module.exports = {
   }
 }
 
-
-/*********************定义自动获取入口文件的函数(2)供参考学习***********/
-
- const glob = require('glob')
-
- function getEntries(globPath) {
-   const entries = glob.sync(globPath).reduce((result, entry) => { // (***这个函数写的比较高级,可以研究一下***)
-     const moduleName = path.basename(path.dirname(entry)) // 获取模块名称
-      result[moduleName] = entry
-     return result
-   }, {})
-   return entries
- }
-// 测试一下 getEntries这个函数
-console.log(getEntries('../static/*')) // 获取static下的所有文件
-
-// 使用 注意路径用的是 ../ (***可以研究一下***)
-const entries = getEntries('./src/modules/**/*.js') // 获取src/modules文件夹下的所有js文件作为入口
-console.log('entries',entries)  // 返回值 是一个对象
-
-/*********************************结束*******************************/

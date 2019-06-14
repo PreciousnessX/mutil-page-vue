@@ -149,47 +149,4 @@ if (config.build.bundleAnalyzerReport) {
   webpackConfig.plugins.push(new BundleAnalyzerPlugin())
 }
 
-
-
-
-
-
-
-
-
-
-
-/***********************声明两个函数,自动化入口出口********************************/
-const glob = require('glob')
-
-function getEntries(globPath) {
-  const entries = glob.sync(globPath).reduce((result, entry) => { // (***这个函数写的比较高级,可以研究一下***)
-    const moduleName = path.basename(path.dirname(entry)) // 获取模块名称
-    result[moduleName] = entry
-    return result
-  }, {})
-  return entries
-}
-const entries = getEntries('./src/modules/**/*.html') // 获取多页面所有入口文件
-/**
- * 页面打包
- * @entries 打包文件
- * @config 参数配置
- * @module 使用的主体
- */
-function pack(entries, module) {
-  for (const path in entries) {
-    const conf = {
-      filename: `modules/${path}/index.html`,
-      template: entries[path], // 模板路径
-      inject: true,
-      chunks: ['manifest', 'vendor', path] // 必须先引入公共依赖
-    }
-    module.plugins.push(new HtmlWebpackPlugin(conf))
-  }
-}
-
-// 使用
-// pack(entries, webpackConfig)
-
 module.exports = webpackConfig
